@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const API_KEY = "AIzaSyAZ7AV4MLyoO_A1QvvQv5lWDJ0DyzjfiQ8";
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 
@@ -79,7 +79,7 @@ const PERSONA_INSTRUCTIONS = {
 export const getChatResponse = async (persona, history, message) => {
     try {
         const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash", // Use a standard model
+            model: "gemini-2.5-flash-lite", // Use a standard model
             systemInstruction: PERSONA_INSTRUCTIONS[persona]
         });
 
