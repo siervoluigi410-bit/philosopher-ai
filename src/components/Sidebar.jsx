@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Shield, Settings, Paperclip, Mic, ChevronUp, MessageSquare, Menu, X } from 'lucide-react';
+import { User, Shield, Settings, Paperclip, Mic, ChevronUp, MessageSquare } from 'lucide-react';
 
 // --- ENHANCED CHARACTER THEMES ---
 const CHARACTER_DATA = {
@@ -32,6 +32,9 @@ const CHARACTER_DATA = {
   }
 };
 
+/**
+ * REUSABLE PILL BUTTON
+ */
 const PillButton = ({ label, active, onClick, fullWidth }) => (
   <button
     onClick={onClick}
@@ -50,117 +53,97 @@ const PillButton = ({ label, active, onClick, fullWidth }) => (
 );
 
 /**
- * UPDATED SIDEBAR: Added responsive classes and Close button
+ * SIDEBAR COMPONENT
  */
-const Sidebar = ({ currentTone, setTone, isOpen, setIsOpen }) => {
+const Sidebar = ({ currentTone, setTone }) => {
   const currentData = CHARACTER_DATA[currentTone];
 
   return (
-    <>
-      {/* Mobile Backdrop Overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
+    <div className="relative flex flex-col h-screen w-85 bg-[#080808] text-white p-8 overflow-hidden font-mono border-r border-white/5 shrink-0 shadow-2xl">
+      {/* Subtle Noise Texture Overlay */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
 
-      <div className={`
-        fixed inset-y-0 left-0 z-50 lg:relative lg:z-0
-        flex flex-col h-screen w-80 bg-[#080808] text-white p-8 overflow-hidden font-mono border-r border-white/5 
-        transition-transform duration-300 ease-in-out shrink-0 shadow-2xl
-        ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-      `}>
-        {/* Close button for mobile */}
-        <button
-          onClick={() => setIsOpen(false)}
-          className="lg:hidden absolute top-6 right-6 text-white/50 hover:text-white"
-        >
-          <X size={24} />
-        </button>
+      <div className="relative z-10 mb-12 group cursor-default">
+        <h1 className="text-3xl tracking-tighter mb-1 font-light flex items-baseline gap-2">
+          Philosopher<span className="text-white/30 text-xl font-mono">-AI</span>
+        </h1>
+        <div className="h-[1px] w-0 group-hover:w-full bg-gradient-to-r from-white/40 to-transparent transition-all duration-700" />
 
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
-
-        <div className="relative z-10 mb-12 group cursor-default">
-          <h1 className="text-3xl tracking-tighter mb-1 font-light flex items-baseline gap-2">
-            Philosopher<span className="text-white/30 text-xl font-mono">-AI</span>
-          </h1>
-          <div className="h-[1px] w-0 group-hover:w-full bg-gradient-to-r from-white/40 to-transparent transition-all duration-700" />
-
-          <div className="flex items-center gap-4 mt-10">
-            <div className="relative">
-              <div className="bg-white/90 p-1.5 rounded-full ring-2 ring-white/10">
-                <User size={20} className="text-black" />
-              </div>
-              <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-black rounded-full animate-pulse" />
+        <div className="flex items-center gap-4 mt-10">
+          <div className="relative">
+            <div className="bg-white/90 p-1.5 rounded-full ring-2 ring-white/10">
+              <User size={20} className="text-black" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-lg tracking-widest lowercase opacity-90 leading-none">mark jamil</span>
-              <span className="text-[9px] text-white/30 uppercase mt-1 tracking-[0.2em]">{currentData.motto}</span>
-            </div>
+            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 border-2 border-black rounded-full animate-pulse" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-lg tracking-widest lowercase opacity-90 leading-none">mark jamil</span>
+            <span className="text-[9px] text-white/30 uppercase mt-1 tracking-[0.2em]">{currentData.motto}</span>
           </div>
         </div>
-
-        <div className="relative z-10 space-y-10 grow overflow-y-auto custom-scrollbar pr-2">
-          <section>
-            <p className="text-[10px] text-gray-500 mb-3 uppercase tracking-widest font-bold opacity-50">Identitation Name</p>
-            <PillButton label="Stoic" active={true} fullWidth />
-          </section>
-
-          <section>
-            <p className="text-[10px] text-gray-500 mb-4 uppercase tracking-widest font-bold opacity-50">Characters</p>
-            <div className="grid grid-cols-2 gap-3 mb-3">
-              {['Aristotle', 'Plato'].map((char) => (
-                <PillButton
-                  key={char}
-                  label={char}
-                  active={currentTone === char.toUpperCase()}
-                  onClick={() => { setTone(char.toUpperCase()); if (window.innerWidth < 1024) setIsOpen(false); }}
-                />
-              ))}
-            </div>
-            <div className="w-full">
-              <PillButton
-                label="Socrates"
-                active={currentTone === 'SOCRATES'}
-                onClick={() => { setTone('SOCRATES'); if (window.innerWidth < 1024) setIsOpen(false); }}
-                fullWidth
-              />
-            </div>
-          </section>
-
-          <section className="group">
-            <p className="text-[10px] text-gray-500 mb-3 uppercase tracking-widest font-bold opacity-50">Recent Dialogues</p>
-            <div className="w-full space-y-2">
-              {["The Cave Allegory", "Virtue Ethics"].map((chat, i) => (
-                <div key={i} className="w-full p-4 bg-white/[0.02] border border-white/5 rounded-xl hover:bg-white/[0.05] hover:border-white/20 transition-all cursor-pointer flex items-center gap-3">
-                  <MessageSquare size={14} className="opacity-30" />
-                  <span className="text-[11px] text-white/50 lowercase">{chat}</span>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
-
-        <div className="relative z-10 space-y-4 pt-8 border-t border-white/5 mt-auto">
-          <button className="flex items-center gap-4 text-gray-500 hover:text-white transition-all group w-full">
-            <Shield size={16} className="group-hover:scale-110 group-hover:text-blue-400 transition-all" />
-            <span className="text-[11px] tracking-widest uppercase opacity-70">Privacy Vault</span>
-          </button>
-          <button className="flex items-center gap-4 text-gray-500 hover:text-white transition-all group w-full">
-            <Settings size={16} className="group-hover:rotate-90 group-hover:text-yellow-400 transition-all" />
-            <span className="text-[11px] tracking-widest uppercase opacity-70">Core System</span>
-          </button>
-        </div>
       </div>
-    </>
+
+      <div className="relative z-10 space-y-10 grow">
+        <section>
+          <p className="text-[10px] text-gray-500 mb-3 uppercase tracking-widest font-bold opacity-50">Identitation Name</p>
+          <PillButton label="Stoic" active={true} fullWidth />
+        </section>
+
+        <section>
+          <p className="text-[10px] text-gray-500 mb-4 uppercase tracking-widest font-bold opacity-50">Characters</p>
+          <div className="grid grid-cols-2 gap-3 mb-3">
+            {['Aristotle', 'Plato'].map((char) => (
+              <PillButton
+                key={char}
+                label={char}
+                active={currentTone === char.toUpperCase()}
+                onClick={() => setTone(char.toUpperCase())}
+              />
+            ))}
+          </div>
+          <div className="w-full">
+            <PillButton
+              label="Socrates"
+              active={currentTone === 'SOCRATES'}
+              onClick={() => setTone('SOCRATES')}
+              fullWidth
+            />
+          </div>
+        </section>
+
+        <section className="group">
+          <p className="text-[10px] text-gray-500 mb-3 uppercase tracking-widest font-bold opacity-50">Recent Dialogues</p>
+          <div className="w-full space-y-2">
+            {["The Cave Allegory", "Virtue Ethics"].map((chat, i) => (
+              <div key={i} className="w-full p-4 bg-white/[0.02] border border-white/5 rounded-xl hover:bg-white/[0.05] hover:border-white/20 transition-all cursor-pointer flex items-center gap-3">
+                <MessageSquare size={14} className="opacity-30" />
+                <span className="text-[11px] text-white/50 lowercase">{chat}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <div className="relative z-10 space-y-4 pt-8 border-t border-white/5">
+        <button className="flex items-center gap-4 text-gray-500 hover:text-white transition-all group w-full">
+          <Shield size={16} className="group-hover:scale-110 group-hover:text-blue-400 transition-all" />
+          <span className="text-[11px] tracking-widest uppercase opacity-70">Privacy Vault</span>
+        </button>
+        <button className="flex items-center gap-4 text-gray-500 hover:text-white transition-all group w-full">
+          <Settings size={16} className="group-hover:rotate-90 group-hover:text-yellow-400 transition-all" />
+          <span className="text-[11px] tracking-widest uppercase opacity-70">Core System</span>
+        </button>
+      </div>
+    </div>
   );
 };
 
+import { getChatResponse } from '../services/gemini';
+
 /**
- * CHAT INTERFACE: Added Mobile Header with Menu Toggle
+ * CHAT INTERFACE COMPONENT
  */
-const ChatInterface = ({ currentTone, toggleMenu }) => {
+const ChatInterface = ({ currentTone }) => {
   const data = CHARACTER_DATA[currentTone] || CHARACTER_DATA.SOCRATES;
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -170,7 +153,7 @@ const ChatInterface = ({ currentTone, toggleMenu }) => {
 
   useEffect(() => {
     setVisible(false);
-    setMessages([]);
+    setMessages([]); // Clear history on persona switch
     const timer = setTimeout(() => setVisible(true), 150);
     return () => clearTimeout(timer);
   }, [currentTone]);
@@ -181,16 +164,21 @@ const ChatInterface = ({ currentTone, toggleMenu }) => {
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
+
     const userMessage = { role: 'user', text: input };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
 
-    // Simulate API delay for demonstration
-    setTimeout(() => {
-      setMessages(prev => [...prev, { role: 'model', text: "The unexamined life is not worth living." }]);
+    try {
+      const responseText = await getChatResponse(currentTone, messages, input);
+      setMessages(prev => [...prev, { role: 'model', text: responseText }]);
+    } catch (error) {
+      console.error("Failed to get response:", error);
+      setMessages(prev => [...prev, { role: 'model', text: "Forgive me, my connection to the ether is weak. Please try again." }]);
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const handleKeyDown = (e) => {
@@ -201,37 +189,35 @@ const ChatInterface = ({ currentTone, toggleMenu }) => {
   };
 
   return (
-    <div className="relative flex-1 h-screen overflow-hidden bg-black flex flex-col items-center justify-between p-4 md:p-10">
+    <div className="relative flex-1 h-screen overflow-hidden bg-black flex flex-col items-center justify-between p-6 md:p-10">
 
-      {/* MOBILE TOP BAR */}
-      <div className="lg:hidden absolute top-0 left-0 right-0 z-30 p-4 flex items-center justify-between bg-black/40 backdrop-blur-md border-b border-white/5">
-        <button onClick={toggleMenu} className="text-white p-2">
-          <Menu size={24} />
-        </button>
-        <span className="text-white/50 font-mono text-xs uppercase tracking-widest">
-          {currentTone}
-        </span>
-        <div className="w-8" /> {/* Spacer for balance */}
-      </div>
-
+      {/* --- COMPLEX BACKGROUND EFFECTS --- */}
       <div
         className={`absolute inset-0 z-0 bg-cover bg-center grayscale-[30%] transition-all duration-[2000ms] ease-out ${data.bgOpacity}`}
         style={{ backgroundImage: `url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/David_-_The_Death_of_Socrates.jpg/1200px-David_-_The_Death_of_Socrates.jpg')` }}
       />
+
+      {/* Character Aura Vignette */}
       <div className={`absolute inset-0 z-1 bg-gradient-to-b ${data.theme} transition-all duration-1000 mix-blend-color-dodge pointer-events-none`} />
+
+      {/* Master Vignette */}
       <div className="absolute inset-0 z-2 bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,0,0,0.8)_100%)]" />
 
-      {/* MESSAGES AREA */}
-      <div className="relative z-10 w-full max-w-5xl flex-1 flex flex-col gap-10 lg:gap-14 pt-16 lg:pt-10 overflow-y-auto px-2 md:px-4 custom-scrollbar">
+      {/* --- MESSAGES AREA --- */}
+      <div className="relative z-10 w-full max-w-5xl flex-1 flex flex-col gap-14 pt-10 overflow-y-auto px-4 custom-scrollbar">
 
-        {/* AI GREETING */}
-        <div className={`self-start w-fit max-w-[95%] lg:max-w-[85%] transition-all duration-1000 transform ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-          <div className={`bg-black/40 backdrop-blur-3xl border border-white/10 p-6 lg:p-12 rounded-3xl lg:rounded-[4rem] rounded-tl-none shadow-2xl relative overflow-hidden`}>
+        {/* AI GREETING (Always visible first) */}
+        <div
+          className={`self-start w-fit max-w-[85%] transition-all duration-1000 transform ${visible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'}`}
+        >
+          <div className={`bg-black/40 backdrop-blur-3xl border border-white/10 p-12 rounded-[4rem] rounded-tl-none shadow-[20px_20px_60px_rgba(0,0,0,0.5)] relative overflow-hidden group`}>
+            {/* Subtle Inner Glow */}
             <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${data.theme} opacity-50`} />
-            <h2 className={`text-3xl lg:text-6xl font-mono tracking-tighter mb-4 ${data.glow}`}>
+
+            <h2 className={`text-white text-6xl font-mono tracking-tighter mb-4 transition-colors duration-1000 ${data.glow}`}>
               {data.greeting}
             </h2>
-            <p className="text-white/80 text-xl lg:text-3xl font-mono tracking-tight leading-tight italic">
+            <p className="text-white/80 text-3xl font-mono tracking-tight leading-tight max-w-2xl italic">
               {data.subtext}
             </p>
           </div>
@@ -239,50 +225,77 @@ const ChatInterface = ({ currentTone, toggleMenu }) => {
 
         {/* DYNAMIC MESSAGES */}
         {messages.map((msg, idx) => (
-          <div key={idx} className={`${msg.role === 'user' ? 'self-end w-fit max-w-[85%] lg:max-w-[70%]' : 'self-start w-fit max-w-[95%] lg:max-w-[85%]'}`}>
+          <div
+            key={idx}
+            className={`
+              ${msg.role === 'user' ? 'self-end w-fit max-w-[70%]' : 'self-start w-fit max-w-[85%]'}
+              transition-all duration-500 transform animate-in fade-in slide-in-from-bottom-4
+            `}
+          >
             <div className={`
               ${msg.role === 'user'
-                ? 'bg-white/5 backdrop-blur-2xl border border-white/10 px-6 lg:px-12 py-3 lg:py-6 rounded-3xl lg:rounded-full'
-                : 'bg-black/40 backdrop-blur-3xl border border-white/10 p-6 lg:p-12 rounded-3xl lg:rounded-[4rem] rounded-tl-none relative overflow-hidden'
+                ? 'bg-white/5 backdrop-blur-2xl border border-white/10 px-12 py-6 rounded-full shadow-xl cursor-default'
+                : 'bg-black/40 backdrop-blur-3xl border border-white/10 p-12 rounded-[4rem] rounded-tl-none shadow-[20px_20px_60px_rgba(0,0,0,0.5)] relative overflow-hidden'
               }
             `}>
-              <p className={`${msg.role === 'user' ? 'text-white/90 text-lg lg:text-2xl font-mono' : 'text-white/80 text-xl lg:text-3xl font-mono italic'}`}>
+              {msg.role !== 'user' && (
+                <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${data.theme} opacity-50`} />
+              )}
+              <p className={`${msg.role === 'user' ? 'text-white/90 text-2xl font-mono tracking-tight' : 'text-white/80 text-3xl font-mono tracking-tight leading-tight italic'}`}>
                 {msg.text}
               </p>
             </div>
           </div>
         ))}
+
+        {isLoading && (
+          <div className="self-start w-fit max-w-[85%] animate-pulse">
+            <div className="bg-black/20 backdrop-blur-xl border border-white/5 p-8 rounded-[3rem] rounded-tl-none">
+              <span className="text-white/50 text-xl font-mono">Contemplating...</span>
+            </div>
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* INPUT BOX */}
-      <div className="relative z-10 w-full max-w-4xl mb-4 lg:mb-6 mt-4">
-        <div className={`bg-black/60 backdrop-blur-3xl border-2 ${data.accent} rounded-[1.5rem] lg:rounded-[2rem] p-4 lg:p-8 flex flex-col gap-4 lg:gap-6`}>
+      {/* --- REFINED INPUT BOX --- */}
+      <div className="relative z-10 w-full max-w-4xl mb-6">
+        <div className={`
+          bg-black/60 backdrop-blur-3xl border-2 transition-all duration-1000 
+          ${data.accent} rounded-[2rem] p-8 shadow-2xl flex flex-col gap-6
+          hover:shadow-[0_0_30px_rgba(255,255,255,0.05)]
+        `}>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            className="w-full bg-transparent border-none focus:ring-0 text-white font-serif italic text-lg lg:text-2xl placeholder-white/20 resize-none h-12 lg:h-14"
-            placeholder="Tell me what do you think?"
+            className="w-full bg-transparent border-none focus:ring-0 text-white font-serif italic text-2xl placeholder-white/20 resize-none h-14 leading-relaxed scrollbar-hide"
+            placeholder="Greetings, my friend. Tell me what do you think?"
             disabled={isLoading}
           />
-          <div className="flex items-center justify-between pt-4 border-t border-white/5">
-            <div className="flex items-center gap-4 lg:gap-10 text-white/40">
-              <div className="flex gap-4 lg:gap-6">
-                <button className="hover:text-white"><Paperclip size={20} /></button>
-                <button className="hover:text-white"><Mic size={20} /></button>
+
+          <div className="flex items-center justify-between mt-2 pt-6 border-t border-white/5">
+            <div className="flex items-center gap-10 text-white/40">
+              <div className="flex gap-6">
+                <button className="hover:text-white hover:scale-110 transition-all duration-300" aria-label="Attach"><Paperclip size={24} /></button>
+                <button className="hover:text-white hover:scale-110 transition-all duration-300" aria-label="Voice"><Mic size={24} /></button>
               </div>
-              <div className="h-6 w-[1px] bg-white/10 hidden sm:block" />
-              <span className={`font-mono text-[10px] lg:text-sm tracking-[0.2em] uppercase ${data.glow} hidden sm:block`}>
-                {currentTone}
+              <div className="h-6 w-[1px] bg-white/10" />
+              <span className={`font-mono text-sm tracking-[0.4em] uppercase transition-colors duration-1000 ${data.glow}`}>
+                {currentTone.toLowerCase()} ultra
               </span>
             </div>
+
             <button
               onClick={handleSend}
               disabled={isLoading || !input.trim()}
-              className="p-3 lg:p-4 rounded-xl bg-white/5 border border-white/10 text-white hover:bg-white hover:text-black transition-all"
+              className={`
+                group p-4 rounded-2xl bg-white/5 border border-white/10 text-white/80 
+                hover:bg-white hover:text-black hover:scale-110 active:scale-95 transition-all duration-500
+                disabled:opacity-50 disabled:cursor-not-allowed
+              `}
             >
-              <ChevronUp size={24} />
+              <ChevronUp size={28} strokeWidth={2.5} className="group-hover:-translate-y-1 transition-transform" />
             </button>
           </div>
         </div>
@@ -296,20 +309,11 @@ const ChatInterface = ({ currentTone, toggleMenu }) => {
  */
 export default function PhilosopherApp() {
   const [tone, setTone] = useState('SOCRATES');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <div className="flex h-screen w-full bg-[#050505] overflow-hidden selection:bg-white/20">
-      <Sidebar
-        currentTone={tone}
-        setTone={setTone}
-        isOpen={isSidebarOpen}
-        setIsOpen={setIsSidebarOpen}
-      />
-      <ChatInterface
-        currentTone={tone}
-        toggleMenu={() => setIsSidebarOpen(!isSidebarOpen)}
-      />
+      <Sidebar currentTone={tone} setTone={setTone} />
+      <ChatInterface currentTone={tone} />
     </div>
   );
 }
